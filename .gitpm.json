@@ -5,13 +5,11 @@
       "method": "yay -S --noconfirm",
       "check_commands": [
         ["waybar", "ironbar"],
-        ["docker, podman"],
-        "distrobox"
+        "yolk"
       ],
       "Arch": {
         "waybar": ["waybar", "ironbar"],
-        "docker": ["docker", "podman"]
-        "distrobox": "distrobox"
+        "yolk": "yolk-bin"
       }
     }
   }
