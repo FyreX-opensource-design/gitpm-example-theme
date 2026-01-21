@@ -2,37 +2,15 @@
   "system_only": false,
   "dependencies": {
     "system": {
-      "method": "sudo pacman -S --noconfirm",
+      "method": "yay -S --noconfirm",
       "check_commands": [
-        ["docker", "podman"],
-        "docker-compose",
-        "distrobox"
+        ["waybar", "ironbar"],
+        "nix"
       ],
       "Arch": {
-        "docker": ["docker", "podman"],
-        "docker-compose": "docker-compose",
-        "distrobox": "distrobox"
-      },
-      "Debian": {
-        "docker": ["docker.io", "podman"],
-        "docker-compose": "docker-compose-plugin",
-        "distrobox": "distrobox"
-      },
-      "Ubuntu": {
-        "docker": "docker.io",
-        "docker-compose": "docker-compose-plugin",
-        "distrobox": "distrobox"
-      },
-      "Fedora": {
-        "docker": "docker",
-        "docker-compose": "docker-compose",
-        "distrobox": "distrobox"
-      },
-      "Fedora_method": "sudo dnf install -y"
-    },
-    "gitpm": [
-      "https://github.com/user/dependency1.git",
-      "https://github.com/user/dependency2.git,branch,custom-name"
-    ]
+        "waybar": ["waybar", "ironbar"],
+        "nix": "nix"
+      }
+    }
   }
 }
