@@ -1,0 +1,8 @@
+export let eggs = #{
+    waybar: #{
+        targets: #{
+            get_env("$XDG_DATA_HOME") + themes/waybar.jsonc",
+            get_env("$XDG_DATA_HOME") + themes/style.css",
+        }
+    }
+}
