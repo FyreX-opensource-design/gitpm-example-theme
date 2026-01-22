@@ -1,8 +1,44 @@
+// Function to read a value from .env file using shell
+fn read_env_value(key, default) {
+    let env_file = "~/.local/share/apps/" + get_env("$NAME") + "/.env";
+    let cmd = "grep -E '^" + key + "=' " + env_file + " 2>/dev/null | cut -d'=' -f2- | tr -d '\"' | tr -d \"'\" || echo ''";
+    let result = run(cmd);
+    match result {
+        Ok(output) => {
+            let value = output.trim();
+            if value.len() > 0 {
+                return value;
+            }
+        }
+        Err(_) => {}
+    }
+    return default;
+}
+
+// Export eww configuration with values from .env file
+export let eww = #{
+    time_format: read_env_value("TIME_FORMAT", "%H:%M:%S"),
+    date_format: read_env_value("DATE_FORMAT", "%A, %B %d, %Y"),
+    width: read_env_value("GEOMETRY_WIDTH", "300px"),
+    height: read_env_value("GEOMETRY_HEIGHT", "120px"),
+    x: read_env_value("GEOMETRY_X", "50%"),
+    y: read_env_value("GEOMETRY_Y", "10px"),
+    anchor: read_env_value("GEOMETRY_ANCHOR", "top center"),
+    time_interval: read_env_value("TIME_INTERVAL", "1s"),
+    date_interval: read_env_value("DATE_INTERVAL", "30s"),
+};
+
 export let eggs = #{
     waybar: #{
         targets: #{
-            get_env("$XDG_DATA_HOME") + themes/waybar.jsonc",
-            get_env("$XDG_DATA_HOME") + themes/style.css",
+            get_env("$XDG_DATA_HOME") + "/themes/waybar.jsonc",
+            get_env("$XDG_DATA_HOME") + "/themes/style.css",
+        }
+    },
+    eww: #{
+        targets: #{
+            get_env("$PWD") + "/eww/eww.yuck",
+            get_env("$PWD") + "/eww/eww.scss",
         }
     }
 }
