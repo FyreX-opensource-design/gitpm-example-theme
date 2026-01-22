@@ -1,51 +1,44 @@
-;; Eww Clock Widget Configuration
-;; This defines a clock widget that displays time and date
-;; This file is templated by yolk - values come from .env file
+// Function to read a value from .env file using shell
+// The .env file should be in the egg directory: eggs/eww/.env
+fn read_env_value(key, default) {
+    let yolk_dir = "~/.local/share/apps/" + get_env("$NAME") + "/yolk";
+    let env_file = "~/.local/share/apps" + get_env("$NAME") + "/.env";
+    let cmd = "grep -E '^" + key + "=' " + env_file + " 2>/dev/null | cut -d'=' -f2- | tr -d '\"' | tr -d \"'\" || echo ''";
+    let result = run(cmd);
+    match result {
+        Ok(output) => {
+            let value = output.trim();
+            if value.len() > 0 {
+                return value;
+            }
+        }
+        Err(_) => {}
+    }
+    return default;
+}
 
-;; Define polling variable for time (updates every second)
-;; {< eww.time_format >} is replaced by yolk with the value from .env
-(defpoll current_time
-  :interval "{< eww.time_interval >}"
-  "date '+{< eww.time_format >}'")
+// Export eww configuration with values from .env file
+export let eww = #{
+    time_format: read_env_value("TIME_FORMAT", "%H:%M:%S"),
+    date_format: read_env_value("DATE_FORMAT", "%A, %B %d, %Y"),
+    width: read_env_value("GEOMETRY_WIDTH", "300px"),
+    height: read_env_value("GEOMETRY_HEIGHT", "120px"),
+    x: read_env_value("GEOMETRY_X", "50%"),
+    y: read_env_value("GEOMETRY_Y", "10px"),
+    anchor: read_env_value("GEOMETRY_ANCHOR", "top center"),
+    time_interval: read_env_value("TIME_INTERVAL", "1s"),
+    date_interval: read_env_value("DATE_INTERVAL", "30s"),
+};
 
-;; Define polling variable for date (updates every 30 seconds)
-;; {< eww.date_format >} is replaced by yolk with the value from .env
-(defpoll current_date
-  :interval "{< eww.date_interval >}"
-  "date '+{< eww.date_format >}'")
-
-;; Define the clock widget
-(defwidget clock_widget []
-  (box
-    :class "clock-box"
-    :orientation "vertical"
-    :halign "center"
-    :valign "center"
-    :spacing 8
-    (label 
-      :class "clock-time" 
-      :text {current_time}
-    )
-    (label 
-      :class "clock-date" 
-      :text {current_date}
-    )
-  ))
-
-;; Define the window that displays the clock widget
-;; Geometry values are replaced by yolk from .env file
-(defwindow clock_window
-  :geometry
-    (geometry
-      :width "{< eww.width >}"
-      :height "{< eww.height >}"
-      :anchor "{< eww.anchor >}"
-      :x "{< eww.x >}"
-      :y "{< eww.y >}"
-    )
-  :monitor 0
-  :stacking "fg"
-  :focusable false
-  (clock_widget)
-)
-
+export let eggs = #{
+    waybar: #{
+        targets: "~/.local/share/apps" + get_env("$NAME") + "/waybar/*",
+        templates: "~/.local/share/apps" + get_env("$NAME") + "/yolk/eggs/waybar/*",
+        enabled: true
+    },
+    eww: #{
+        targets: "~/.local/share/apps" + get_env("$NAME") + "/eww/*",
+        templates: "~/.local/share/apps" + get_env("$NAME") + "yolk/eggs/eww/*",
+        enabled: true
+    }
+}
