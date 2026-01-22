@@ -1,0 +1,51 @@
+;; Eww Clock Widget Configuration
+;; This defines a clock widget that displays time and date
+;; This file is templated by yolk - values come from .env file
+
+;; Define polling variable for time (updates every second)
+;; {< eww.time_format >} is replaced by yolk with the value from .env
+(defpoll current_time
+  :interval "{< eww.time_interval >}"
+  "date '+{< eww.time_format >}'")
+
+;; Define polling variable for date (updates every 30 seconds)
+;; {< eww.date_format >} is replaced by yolk with the value from .env
+(defpoll current_date
+  :interval "{< eww.date_interval >}"
+  "date '+{< eww.date_format >}'")
+
+;; Define the clock widget
+(defwidget clock_widget []
+  (box
+    :class "clock-box"
+    :orientation "vertical"
+    :halign "center"
+    :valign "center"
+    :spacing 8
+    (label 
+      :class "clock-time" 
+      :text {current_time}
+    )
+    (label 
+      :class "clock-date" 
+      :text {current_date}
+    )
+  ))
+
+;; Define the window that displays the clock widget
+;; Geometry values are replaced by yolk from .env file
+(defwindow clock_window
+  :geometry
+    (geometry
+      :width "{< eww.width >}"
+      :height "{< eww.height >}"
+      :anchor "{< eww.anchor >}"
+      :x "{< eww.x >}"
+      :y "{< eww.y >}"
+    )
+  :monitor 0
+  :stacking "fg"
+  :focusable false
+  (clock_widget)
+)
+
